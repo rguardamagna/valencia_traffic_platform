@@ -15,15 +15,31 @@ A Data Engineering project to ingest, process, and analyze real-time traffic dat
 - Python 3.8+
 
 ### Setup
-1.  Clone the repository.
-2.  Install dependencies (none yet, standard library used for now, `requests` needed later).
+### Setup (VPS or Local with Docker)
+
+1.  **Clone the repository.**
+2.  **Environment Setup:**
+    Create a `.env` file in the root directory:
     ```bash
-    pip install requests
+    echo "AIRFLOW_UID=50000" > .env
     ```
-3.  Run the ingestion script:
+3.  **Build Ingestion Image:**
+    This image is used by Airflow's DockerOperator.
     ```bash
-    python src/ingestion/ingest_traffic.py
+    docker-compose build ingestion-build
     ```
+4.  **Start Platform:**
+    Initialize Airflow and start services.
+    ```bash
+    docker-compose up airflow-init
+    docker-compose up -d
+    ```
+5.  **Access Airflow:**
+    - URL: `http://localhost:8080` (or `http://your-vps-ip:8080`)
+    - User: `airflow`
+    - Password: `airflow`
+6.  **Trigger Ingestion:**
+    Enable the `valencia_traffic_ingestion` DAG in the UI.
 
 ## 📂 Data Source
 - **API:** [Valencia Open Data - Estado Tráfico Tiempo Real](https://valencia.opendatasoft.com/explore/dataset/estat-transit-temps-real-estado-trafico-tiempo-real/api/)
