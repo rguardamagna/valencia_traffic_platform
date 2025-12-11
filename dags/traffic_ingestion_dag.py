@@ -1,5 +1,6 @@
 from airflow import DAG
 from airflow.providers.docker.operators.docker import DockerOperator
+from docker.types import Mount
 from datetime import datetime, timedelta
 
 default_args = {
@@ -29,11 +30,8 @@ with DAG(
         auto_remove=True,
         command="python src/ingestion/ingest_traffic.py",
         docker_url="unix://var/run/docker.sock",
-        network_mode="bridge",
-        # We mount the VPS path to the container path to persist data
-        # IMPORTANT: Ensure '/opt/valencia_traffic_platform/data' exists on your VPS
         mounts=[
-             "/opt/valencia_traffic_platform/data:/app/data"
+            Mount(source='/opt/airflow/data', target='/app/data', type='bind')
         ]
     )
 
