@@ -17,7 +17,8 @@ data/
 # OS
 .DS_Store
 Thumbs.db
-daily_meeting.md
+
 
 # Environment Variables
 .env
+

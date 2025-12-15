@@ -31,7 +31,7 @@ with DAG(
         command="python src/ingestion/ingest_traffic.py",
         docker_url="unix://var/run/docker.sock",
         mounts=[
-            Mount(source='/opt/airflow/data', target='/app/data', type='bind')
+            Mount(source='/root/valencia_traffic_platform/data', target='/app/data', type='bind')
         ]
     )
 

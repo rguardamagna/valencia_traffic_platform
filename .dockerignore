@@ -1,0 +1,30 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env
+venv
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Data
+data/
+
+# Documentation
+docs/
+daily_meeting.md
+README.md
+
+# IDE
+.vscode
+.idea
+
+# Environment
+.env

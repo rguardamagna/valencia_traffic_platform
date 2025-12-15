@@ -31,6 +31,10 @@ jobs:
             cd /opt/valencia_traffic_platform
             # Build the image (this updates the 'latest' tag)
             docker compose build
-            # Note: We don't need to 'up' it here because Airflow will run it on demand.
-            # But if you wanted to test it immediately:
-            # docker compose run --rm ingestion
+            
+            # Restart services to apply any changes in docker-compose.yml or env vars
+            # This ensures the running containers match the latest configuration
+            docker compose up -d
+            
+            # Prune unused images to save space (optional but recommended)
+            docker image prune -f
