@@ -106,3 +106,31 @@ Este documento registra los problemas técnicos encontrados durante el desarroll
 - **Solution:**
   1.  **Clear browser cookies** or open an **Incognito/Private** window.
   2.  Ensure the new user is created: `docker compose up airflow-init`.
+
+## 📅 2025-12-15: Configuración de Despliegue Automático y Nginx
+
+### 6. Nginx 502 Bad Gateway / Connection Refused (IPv6 vs IPv4)
+- **Síntoma:** Al acceder a `airflow.rodrigoguardamagna.com` o `n8n.rodrigoguardamagna.com`, Nginx devolvía error 502.
+- **Log de Error:** `connect() failed (111: Connection refused) ... upstream: "http://[::1]:8080/..."`
+- **Causa:** Nginx intentaba conectar al upstream (Airflow/n8n) usando **IPv6** (`[::1]`) porque `localhost` resolvía a esa dirección, pero los servicios Docker solo escuchaban en **IPv4** (`127.0.0.1`).
+- **Solución:** Forzar el uso de IPv4 en la configuración de Nginx (`proxy_pass`).
+  ```nginx
+  # Antes (Incorrecto)
+  proxy_pass http://localhost:8080;
+  
+  # Después (Correcto)
+  proxy_pass http://127.0.0.1:8080;
+  ```
+
+
+
+### 7. Airflow "Connection Reset" / "Starting" Loop
+- **Síntoma:** Después del despliegue, Airflow no arrancaba y los logs mostraban `ValueError: Unable to configure handler 'processor'`.
+- **Causa:** Al desplegar código nuevo, los permisos de las carpetas `logs`, `dags` y `plugins` en el host no pertenecían al usuario interno de Airflow (UID 50000), impidiendo la escritura de logs.
+- **Solución:** Restaurar permisos en el VPS.
+  ```bash
+  cd /opt/valencia_traffic_platform
+  sudo chown -R 50000:0 logs dags plugins
+  sudo chmod -R 775 logs dags plugins
+  docker compose restart
+  ```
