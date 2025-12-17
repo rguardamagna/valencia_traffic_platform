@@ -4,15 +4,16 @@ A Data Engineering project to ingest, process, and analyze real-time traffic dat
 
 ## 🏗 Architecture
 
-1.  **Ingestion (The Chronicler):** Fetches real-time data from Valencia Open Data API every 10 minutes.
-2.  **Storage (Data Lake):** Stores raw JSON snapshots partitioned by date.
-3.  **Processing (The Refiner):** (Planned) dbt + BigQuery to clean and model history.
-4.  **Analysis (The Oracle):** (Planned) Machine Learning model to predict traffic congestion.
+
+1.  **Ingestion ("The Chronicler"):** Fetches real-time data from Valencia Open Data API every 10 minutes. Handles API pagination to retrieve all ~400 sensors.
+2.  **Storage (Data Lake):** Stores raw JSON snapshots partitioned by date (`data/raw/YYYY/MM/DD/`).
+3.  **Exploration ("The Refiner"):** Jupyter Lab instance running on the VPS for direct analysis of the Data Lake.
+4.  **Processing & Analysis ("The Oracle"):** (Planned) Machine Learning model to predict traffic congestion.
 
 ## 🚀 Project Status
-- **Status:** 🟢 In Production (Ingestion Active)
-- **Last Update:** 11/12/2025
-- **Current Milestone:** Real-time traffic data ingestion operational on VPS.
+- **Status:** 🟢 In Production (Ingestion & Exploration Active)
+- **Last Update:** 17/12/2025
+- **Current Milestone:** "The Refiner" (Jupyter Lab) deployed and Data Ingestion logic fixed (Pagination).
 
 ## 🚀 Getting Started
 
