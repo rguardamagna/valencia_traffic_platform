@@ -5,21 +5,51 @@ from datetime import datetime
 import logging
 
 # Configuration
-API_URL = "https://valencia.opendatasoft.com/api/explore/v2.1/catalog/datasets/estat-transit-temps-real-estado-trafico-tiempo-real/records?limit=-1"
+# Configuration
+BASE_API_URL = "https://valencia.opendatasoft.com/api/explore/v2.1/catalog/datasets/estat-transit-temps-real-estado-trafico-tiempo-real/records"
 BASE_DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "data", "raw")
 
 # Setup Logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def fetch_traffic_data():
-    """Fetches real-time traffic data from Valencia Open Data API."""
+    """Fetches ALL real-time traffic data from Valencia Open Data API using pagination."""
+    all_records = []
+    offset = 0
+    limit = 100 # Max limit per request for Opendatasoft v2.1
+    
     try:
-        logging.info("Fetching data from API...")
-        response = requests.get(API_URL)
-        response.raise_for_status()
-        data = response.json()
-        logging.info(f"Successfully fetched {data.get('total_count', 'unknown')} records.")
-        return data
+        logging.info("Fetching data from API with pagination...")
+        
+        while True:
+            url = f"{BASE_API_URL}?limit={limit}&offset={offset}"
+            logging.info(f"Requesting offset {offset}...")
+            
+            response = requests.get(url)
+            response.raise_for_status()
+            data = response.json()
+            
+            records = data.get('results', [])
+            if not records:
+                break
+                
+            all_records.extend(records)
+            
+            total_count = data.get('total_count', 0)
+            if len(all_records) >= total_count:
+                break
+                
+            offset += limit
+
+        logging.info(f"Successfully fetched {len(all_records)} records (Total available: {total_count}).")
+        
+        # Return structure compatible with previous logic but containing all results
+        return {
+            "total_count": total_count,
+            "results": all_records,
+            "ingestion_metadata": {} # Will be populated in save_data
+        }
+        
     except requests.exceptions.RequestException as e:
         logging.error(f"Error fetching data: {e}")
         return None
@@ -35,7 +65,7 @@ def save_data(data):
     # Add ingestion metadata
     data['ingestion_metadata'] = {
         'ingestion_timestamp': timestamp_str,
-        'source_url': API_URL
+        'source_url': BASE_API_URL
     }
 
     # Define path: data/raw/YYYY/MM/DD/traffic_HHMMSS.json

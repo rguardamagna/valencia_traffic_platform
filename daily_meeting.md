@@ -19,6 +19,7 @@
 
 ### Ingestión de Datos ("The Chronicler")
 - [x] **Pipeline:** DAG `valencia_traffic_ingestion` ejecutándose cada 10 minutos.
+    - *Fix (17/12):* Corregido límite de 100 registros implementando paginación (ahora descarga los ~400 sensores).
 - [x] **Source:** API Open Data Valencia.
 - [x] **Storage:** Datos crudos (JSON) almacenados en estructura particionada `data/raw/YYYY/MM/DD/`.
 
