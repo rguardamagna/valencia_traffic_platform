@@ -83,5 +83,18 @@ services:
     image: valencia-traffic-ingestion:latest
     profiles: ["tools"] # Won't run with 'up', only 'up --profile tools' or explicit run
 
+  jupyter:
+    image: jupyter/scipy-notebook:latest
+    ports:
+      - "127.0.0.1:8888:8888"
+    volumes:
+      - ${AIRFLOW_PROJ_DIR:-.}/data:/home/jovyan/work/data
+      - ${AIRFLOW_PROJ_DIR:-.}/notebooks:/home/jovyan/work/notebooks
+      - ${AIRFLOW_PROJ_DIR:-.}/dags:/home/jovyan/work/dags
+    environment:
+      JUPYTER_TOKEN: "${JUPYTER_TOKEN:-valenciatraffic}"
+      JUPYTER_ENABLE_LAB: "yes"
+    restart: always
+
 volumes:
   postgres-db-volume:

@@ -9,6 +9,8 @@ venv/
 # Data
 data/
 !data/.gitkeep
+ctx2.pdf
+ctx1.docx
 
 # IDE
 .vscode/

@@ -3,7 +3,7 @@
 **Objetivo:** Construir una plataforma de datos "Cloud-Native" que ingeste, almacene y procese datos de tráfico de Valencia en tiempo real para crear un histórico y realizar predicciones.
 
 ## 🚀 Estado Actual
-- **Fase:** Operación y Mantenimiento ("The Chronicler").
+- **Fase:** Implementación de "The Refiner" (Análisis Exploratorio).
 - **Estado:** 🟢 Desplegado en VPS (Producción).
 - **Hito:** Ingestión de datos activa y segura.
 
@@ -27,10 +27,15 @@
 - [x] **Documentación:** Creada guía de despliegue `docs/deployment_setup.md`.
 - [x] **Troubleshooting:** Solucionados problemas de conexión (IPv6 vs IPv4) en Nginx para n8n y Airflow.
 
+### Análisis Exploratorio ("The Refiner")
+- [x] **Infraestructura:** Añadido servicio Jupyter Lab a `docker-compose.yml` (expuesto solo a localhost).
+
 ## 📋 Próximos Pasos
-1.  **Análisis Exploratorio ("The Refiner"):**
-    - Cargar datos históricos en Notebooks.
-    - Análisis de calidad de datos y estructura.
+1.  **Despliegue y Acceso:**
+    - Desplegar cambios en VPS (`git push`).
+    - Establecer túnel SSH para Jupyter (`ssh -L 8888:localhost:8888 ...`).
+2.  **Análisis de Datos:**
+    - Crear primer notebook para inspeccionar calidad de datos.
 2.  **Optimización:**
     - Implementar mejoras del roadmap (compresión, alertas).
 
