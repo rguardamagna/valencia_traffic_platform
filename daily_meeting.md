@@ -23,10 +23,11 @@
 - [x] **Source:** API Open Data Valencia.
 - [x] **Storage:** Datos crudos (JSON) almacenados en estructura particionada `data/raw/YYYY/MM/DD/`.
 
-### DevOps & Mantenimiento (Nuevo)
-- [x] **CI/CD:** Configurado pipeline de despliegue automático en GitHub Actions.
-- [x] **Documentación:** Creada guía de despliegue `docs/deployment_setup.md`.
-- [x] **Troubleshooting:** Solucionados problemas de conexión (IPv6 vs IPv4) en Nginx para n8n y Airflow.
+### DevOps & Portabilidad (19/12)
+- [x] **Configuración:** Externalizada la URL de la API a variables de entorno (`.env`).
+- [x] **Portabilidad del DAG:** Implementado el uso de **Airflow Variables** para rutas de archivos, eliminando el hardcoding de paths.
+- [x] **Documentación de entorno:** Creado `.env.example` para estandarizar la configuración del stack.
+- [x] **Infra:** Configurado `docker-compose.yml` para cargar automáticamente el archivo `.env`.
 
 ### Análisis Exploratorio ("The Refiner")
 - [x] **Infraestructura:** Añadido servicio Jupyter Lab a `docker-compose.yml` (expuesto solo a localhost).

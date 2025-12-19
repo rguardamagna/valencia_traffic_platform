@@ -3,6 +3,9 @@ from airflow.providers.docker.operators.docker import DockerOperator
 from docker.types import Mount
 from datetime import datetime, timedelta
 
+from airflow.models import Variable
+import os
+
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
@@ -11,6 +14,12 @@ default_args = {
     'retries': 1,
     'retry_delay': timedelta(minutes=5),
 }
+
+# Get configuration from Airflow Variables or environment
+# Intentamos detectar la ruta del proyecto desde el entorno, si no, usamos /opt/ como base (más estándar que /root)
+default_project_path = os.environ.get('AIRFLOW_PROJ_DIR', '/opt/valencia_traffic_platform')
+PROJECT_DATA_PATH = Variable.get("valencia_traffic_data_path", default_var=f"{default_project_path}/data")
+API_URL = os.environ.get("VALENCIA_TRAFFIC_API_URL", "https://valencia.opendatasoft.com/api/explore/v2.1/catalog/datasets/estat-transit-temps-real-estado-trafico-tiempo-real/records")
 
 with DAG(
     'valencia_traffic_ingestion',
@@ -30,8 +39,11 @@ with DAG(
         auto_remove=True,
         command="python src/ingestion/ingest_traffic.py",
         docker_url="unix://var/run/docker.sock",
+        environment={
+            "VALENCIA_TRAFFIC_API_URL": API_URL
+        },
         mounts=[
-            Mount(source='/root/valencia_traffic_platform/data', target='/app/data', type='bind')
+            Mount(source=PROJECT_DATA_PATH, target='/app/data', type='bind')
         ]
     )
 

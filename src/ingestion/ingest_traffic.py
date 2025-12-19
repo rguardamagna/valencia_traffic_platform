@@ -3,11 +3,21 @@ import json
 import os
 from datetime import datetime
 import logging
+from pathlib import Path
 
 # Configuration
-# Configuration
-BASE_API_URL = "https://valencia.opendatasoft.com/api/explore/v2.1/catalog/datasets/estat-transit-temps-real-estado-trafico-tiempo-real/records"
-BASE_DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "data", "raw")
+# Definimos la raíz del proyecto de forma limpia con pathlib
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+# Inyeccion de variables de entorno con valores por defecto (Defensive Programming)
+BASE_API_URL = os.environ.get("VALENCIA_TRAFFIC_API_URL")
+if not BASE_API_URL:
+    # Si no hay variable, usamos la de Opendatasoft por defecto para que el script no falle al descargarlo
+    BASE_API_URL = "https://valencia.opendatasoft.com/api/explore/v2.1/catalog/datasets/estat-transit-temps-real-estado-trafico-tiempo-real/records"
+
+# Usamos BASE_DIR para construir el path de datos de forma legible
+env_data_dir = os.environ.get("VALENCIA_TRAFFIC_DATA_DIR")
+BASE_DATA_DIR = Path(env_data_dir) if env_data_dir else BASE_DIR / "data" / "raw"
 
 # Setup Logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -74,10 +84,10 @@ def save_data(data):
     day = now.strftime("%d")
     filename = f"traffic_{now.strftime('%H%M%S')}.json"
 
-    target_dir = os.path.join(BASE_DATA_DIR, year, month, day)
-    os.makedirs(target_dir, exist_ok=True)
+    target_dir = BASE_DATA_DIR / year / month / day
+    target_dir.mkdir(parents=True, exist_ok=True)
     
-    file_path = os.path.join(target_dir, filename)
+    file_path = target_dir / filename
 
     try:
         with open(file_path, 'w', encoding='utf-8') as f:
