@@ -53,10 +53,24 @@ def fetch_traffic_data():
 
         logging.info(f"Successfully fetched {len(all_records)} records (Total available: {total_count}).")
         
+        # Deduplication Logic (Fix for API pagination instability)
+        # We prioritize 'idtramo' as the unique key, falling back to 'gid' if necessary.
+        unique_records_map = {}
+        for record in all_records:
+            # Identifier priority: idtramo > gid
+            unique_id = record.get('idtramo', record.get('gid'))
+            if unique_id:
+                unique_records_map[unique_id] = record
+        
+        unique_records = list(unique_records_map.values())
+        
+        if len(all_records) > len(unique_records):
+            logging.info(f"🧹 Deduplication applied: Removed {len(all_records) - len(unique_records)} duplicates. Final count: {len(unique_records)}")
+
         # Return structure compatible with previous logic but containing all results
         return {
-            "total_count": total_count,
-            "results": all_records,
+            "total_count": total_count, # Metadata count from API
+            "results": unique_records,  # Cleaned records
             "ingestion_metadata": {} # Will be populated in save_data
         }
         
