@@ -29,6 +29,10 @@
 - [x] **Documentación de entorno:** Creado `.env.example` para estandarizar la configuración del stack.
 - [x] **Infra:** Configurado `docker-compose.yml` para cargar automáticamente el archivo `.env`.
 
+### Documentación (20/12)
+- [x] **Actualización General:** Sincronizados `README.md`, `deployment_setup.md` y `troubleshooting_log.md` con la nueva arquitectura en `/opt`.
+- [x] **Troubleshooting:** Restaurado histórico de problemas y añadido caso de "Variable not set".
+
 ### Análisis Exploratorio ("The Refiner")
 - [x] **Infraestructura:** Añadido servicio Jupyter Lab a `docker-compose.yml` (expuesto solo a localhost).
 

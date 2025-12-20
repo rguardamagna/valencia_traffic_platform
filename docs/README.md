@@ -4,7 +4,6 @@ A Data Engineering project to ingest, process, and analyze real-time traffic dat
 
 ## 🏗 Architecture
 
-
 1.  **Ingestion ("The Chronicler"):** Fetches real-time data from Valencia Open Data API every 10 minutes. Handles API pagination to retrieve all ~400 sensors.
 2.  **Storage (Data Lake):** Stores raw JSON snapshots partitioned by date (`data/raw/YYYY/MM/DD/`).
 3.  **Exploration ("The Refiner"):** Jupyter Lab instance running on the VPS for direct analysis of the Data Lake.
@@ -12,22 +11,26 @@ A Data Engineering project to ingest, process, and analyze real-time traffic dat
 
 ## 🚀 Project Status
 - **Status:** 🟢 In Production (Ingestion & Exploration Active)
-- **Last Update:** 17/12/2025
-- **Current Milestone:** "The Refiner" (Jupyter Lab) deployed and Data Ingestion logic fixed (Pagination).
+- **Last Update:** 20/12/2025
+- **Current Milestone:** "The Refiner" (Jupyter Lab) deployed. Ingestion configuration externalized and portable.
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 - Python 3.8+
+- Docker & Docker Compose
 
-### Setup
 ### Setup (VPS or Local with Docker)
 
 1.  **Clone the repository.**
 2.  **Environment Setup:**
-    Create a `.env` file in the root directory:
+    Create a `.env` file in the root directory (or use `.env.example` as a template):
     ```bash
-    echo "AIRFLOW_UID=50000" > .env
+    # Set your user ID for permission management
+    echo "AIRFLOW_UID=$(id -u)" > .env
+    
+    # Optional: Configure API URL and Data Directory
+    # echo "VALENCIA_TRAFFIC_API_URL=https://..." >> .env
     ```
 3.  **Build Ingestion Image:**
     This image is used by Airflow's DockerOperator.
@@ -58,3 +61,8 @@ A Data Engineering project to ingest, process, and analyze real-time traffic dat
 ## 📂 Data Source
 - **API:** [Valencia Open Data - Estado Tráfico Tiempo Real](https://valencia.opendatasoft.com/explore/dataset/estat-transit-temps-real-estado-trafico-tiempo-real/api/)
 - **Update Frequency:** Every 3 minutes (Source). We ingest every 10 minutes.
+
+## 🛠️ Configuration & Portability
+- **Configuration:** API URL and other settings are managed via environment variables and `os.environ`.
+- **Paths:** The project uses `pathlib` for robust path handling.
+- **Airflow Variables:** Use `valencia_traffic_data_path` in Airflow UI to configure where data is stored on the host (Default: `/opt/valencia_traffic_platform/data` or `/root/valencia_traffic_platform/data`).
