@@ -29,8 +29,8 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             cd /opt/valencia_traffic_platform
-            # Build the image (this updates the 'latest' tag)
-            docker compose build
+            # Build the image (force no-cache to ensure code updates are picked up)
+            docker compose build --no-cache
             
             # Restart services to apply any changes in docker-compose.yml or env vars
             # This ensures the running containers match the latest configuration

@@ -9,8 +9,7 @@ venv/
 # Data
 data/
 !data/.gitkeep
-ctx2.pdf
-ctx1.docx
+
 
 # IDE
 .vscode/
@@ -24,3 +23,5 @@ Thumbs.db
 # Environment Variables
 .env
 
+ctx1.docx
+ctx2.pdf

@@ -39,6 +39,17 @@ This document collects technical improvements identified for the data ingestion 
 - [ ] **Unit Tests:**
     - Create unit tests for `ingest_traffic.py` (mocking the API response) to ensure that saving logic and filenames don't break with future changes.
 
+## 5. Modeling and Machine Learning (The Oracle)
+
+- [ ] **Automated Champion vs Challenger Strategy:**
+    - Implement a periodic re-evaluation process (e.g., every 15 days).
+    - Train a "Top 5" of models with different hyperparameters or algorithms.
+    - Automatically promote a "Challenger" to "Champion" if it outperforms key metrics (e.g., F1-Score on minority classes).
+- [ ] **Business/Traffic Metrics:**
+    - Beyond Recall, measure time error (e.g., how many minutes of lag does the prediction have?).
+- [ ] **MLOps with MLflow:**
+    - Integrate MLflow for experiment tracking, model registry, and artifact versioning.
+
 ---
 ---
 
@@ -82,3 +93,25 @@ Este documento recopila las mejoras técnicas identificadas para la fase de inge
 
 - [ ] **Unit Tests:**
     - Crear tests unitarios para `ingest_traffic.py` (mockeando la respuesta de la API) para asegurar que la lógica de guardado y nombres de archivo no se rompa con cambios futuros.
+
+## 5. Modelado y Machine Learning (The Oracle)
+
+- [ ] **Estrategia Champion vs Challenger Automatizada:**
+    - Implementar un proceso de reevaluación periódica (ej. cada 15 días).
+    - Entrenar un Top 5 de modelos con diferentes hiperparámetros o algoritmos (ej. XGBoost, Random Forest, LightGBM).
+    - Promover automáticamente al "Challenger" a "Champion" si supera métricas clave (ej. F1-Score en clases minoritarias).
+- [ ] **Métricas de Negocio / Tráfico:**
+    - Más allá del Recall, medir el error en tiempo (ej. ¿cuántos minutos de desfase tiene la predicción?).
+- [ ] **MLOps con MLflow:**
+    - Integrar MLflow para el seguimiento de experimentos, registro de modelos y versionado de artefactos.
+
+## 6. Visualización ("The Spotlight")
+
+- [ ] **Despliegue en Producción:**
+    - Actualmente el dashboard corre localmente. El siguiente paso es desplegarlo en el VPS usando Docker y exponerlo de forma segura tras Nginx.
+- [ ] **Filtros Avanzados:**
+    - Permitir filtrar por barrios, tipos de vía o niveles de congestión específicos.
+- [ ] **Histórico Dinámico:**
+    - Añadir un "Time Slider" para visualizar cómo ha evolucionado el tráfico en las últimas horas/días basándose en el histórico almacenado.
+- [ ] **Alertas en Dashboard:**
+    - Notificaciones visuales cuando un tramo crítico supere el umbral de congestión.

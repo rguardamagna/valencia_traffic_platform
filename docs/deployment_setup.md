@@ -34,20 +34,20 @@ VALENCIA_TRAFFIC_API_URL=https://valencia.opendatasoft.com/api/explore/v2.1/cata
 El archivo `.github/workflows/deploy.yml` gestiona el despliegue automático al hacer push a `main`.
 
 ### Secretos Necesarios (GitHub Repo Settings -> Secrets)
-- `VPS_HOST`: IP del servidor (ej. `46.224.25.226`)
-- `VPS_USERNAME`: Usuario SSH (ej. `root`)
+- `VPS_HOST`: IP del servidor (ej. `x.x.x.x`)
+- `VPS_USERNAME`: Usuario SSH (ej. `deploy_user`)
 - `VPS_SSH_KEY`: Clave privada SSH (generada específicamente para GitHub Actions).
 
 ### Flujo de Despliegue
 1.  **Checkout:** Descarga el código.
 2.  **SCP:** Copia los archivos a `/opt/valencia_traffic_platform`.
 3.  **SSH Commands:**
-    - Reconstruye la imagen de ingestión (`docker compose build`).
+    - Reconstruye la imagen de ingestión (`docker compose build --no-cache`).
     - Reinicia los servicios (`docker compose up -d`).
 
 ## 3. Configuración de Airflow (Post-Despliegue)
 
-Una vez Airflow esté corriendo, entra a la UI (`http://localhost:8080` vía túnel SSH) y configura:
+- **URL:** Entra a la UI en `https://airflow.rodrigoguardamagna.com`.
 
 - **Connections:** (Si aplica) Conexión a Postgres o APIs.
 - **Variables:**
@@ -59,7 +59,7 @@ Una vez Airflow esté corriendo, entra a la UI (`http://localhost:8080` vía tú
 No expongas el puerto 8080 a internet. Usa un túnel SSH para acceder a Airflow y Jupyter:
 
 ```bash
-# Acceso a Airflow (8080) y Jupyter (8888)
-ssh -L 8080:127.0.0.1:8080 -L 8888:127.0.0.1:8888 root@46.224.25.226
+# Acceso a Jupyter (8888) solamente
+ssh -L 8888:127.0.0.1:8888 usuario@<VPS_IP>
 ```
-Abrir en navegador: `http://localhost:8080`
+Abrir Jupyter: `http://localhost:8888`

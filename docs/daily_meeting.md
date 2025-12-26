@@ -3,9 +3,9 @@
 **Objetivo:** Construir una plataforma de datos "Cloud-Native" que ingeste, almacene y procese datos de tráfico de Valencia en tiempo real para crear un histórico y realizar predicciones.
 
 ## 🚀 Estado Actual
-- **Fase:** Implementación de "The Refiner" (Análisis Exploratorio).
-- **Estado:** 🟢 Desplegado en VPS (Producción).
-- **Hito:** Ingestión de datos activa y segura.
+- **Fase:** Modelado y Visualización ("The Oracle" & "The Spotlight").
+- **Estado:** 🔵 En desarrollo / 🟢 Dashboard Operativo Localmente.
+- **Hito:** Dashboard de Streamlit lanzado con visualización en tiempo real y modelo Champion validado.
 
 ## ✅ Log de Avances
 
@@ -33,17 +33,38 @@
 - [x] **Actualización General:** Sincronizados `README.md`, `deployment_setup.md` y `troubleshooting_log.md` con la nueva arquitectura en `/opt`.
 - [x] **Troubleshooting:** Restaurado histórico de problemas y añadido caso de "Variable not set".
 
+### Calidad de Datos y Validación (20/12)
+- [x] **Jupyter Debugging:** Solucionado conflicto de rutas `../data/raw`.
+- [x] **Data Quality Fix:** Implementada deduplicación por `idtramo` en ingestión para corregir fallos de paginación de la API.
+- [x] **CI/CD Hardening:** Actualizado `deploy.yml` con `--no-cache` para garantizar despliegue de código fresco.
+- [x] **Validation:** Confirmada ingestión limpia (~378 registros únicos).
+
 ### Análisis Exploratorio ("The Refiner")
 - [x] **Infraestructura:** Añadido servicio Jupyter Lab a `docker-compose.yml` (expuesto solo a localhost).
+- [x] **Mentoría & Personalización (22/12):** 
+    - Establecidas directivas de mentoría personalizadas en la configuración global de Antigravity.
+    - Definido enfoque de aprendizaje: Senior Mentor guiando con pistas (hints) y enfoque en GCP + AI.
+    - Seleccionado **Gemini 3 Flash** como modelo principal de trabajo por su alta eficiencia en codificación agentica.
+- [x] **Modelado (26/12):**
+    - Entrenado modelo Champion (XGBoost) con pesos balanceados logrando 88% de Recall en congestiones.
+- [x] **Visualización - "The Spotlight" (26/12):**
+    - Implementado dashboard con Streamlit y Folium.
+    - Mapa interactivo con tramos de tráfico codificados por colores (Fluido -> Congestión).
+    - Métricas de salud del tráfico integradas.
+    - Solucionados problemas de dependencias en entorno `envdata` y bugs de integración (`PolyLine`, `KeyError`).
 
 ## 📋 Próximos Pasos
-1.  **Despliegue y Acceso:**
-    - Desplegar cambios en VPS (`git push`).
-    - Establecer túnel SSH para Jupyter (`ssh -L 8888:localhost:8888 ...`).
-2.  **Análisis de Datos:**
-    - Crear primer notebook para inspeccionar calidad de datos.
-2.  **Optimización:**
-    - Implementar mejoras del roadmap (compresión, alertas).
+1.  **Ruta 1 - ML Ops: Integración de "The Oracle"**
+    - Exportar el modelo Champion (XGBoost) desde el notebook a `/models/champion_xgboost.joblib`.
+    - Implementar pipeline de pre-procesamiento real-time en el dashboard (encoding, lags).
+    - Activar la inferencia en vivo para mostrar predicciones a +15/30 min sobre el mapa.
+2.  **Ruta 3 - Cloud: Transición a GCP**
+    - Configurar un bucket en **Google Cloud Storage (GCS)** para replicar el Data Lake.
+    - Planificar la ingesta de JSONs desde GCS a **BigQuery** para analítica SQL escalable.
+    - Explorar **Vertex AI** para el re-entrenamiento automático del modelo.
+3.  **Mantenimiento y Documentación**
+    - Restaurar el registro de problemas de hoy en `troubleshooting_log.md`.
+    - Evaluar la dockerización del dashboard para su despliegue en VPS.
 
 ## 📝 Notas Técnicas
 - **Fuente de Datos:** API Open Data Valencia (actualización cada 3 min).

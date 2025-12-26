@@ -2,6 +2,30 @@
 
 Este documento registra los problemas técnicos encontrados durante el desarrollo y despliegue, junto con sus soluciones, para futura referencia.
 
+## 📅 2025-12-20: Calidad de Datos y Hardening de Despliegue
+
+### 12. "Stale Docker Image" (Código nuevo, Comportamiento viejo)
+- **Síntoma:** Tras actualizar el código de ingestión (`git pull`) para arreglar la paginación, el DAG seguía trayendo solo 100 registros.
+- **Causa:** `DockerOperator` ejecutaba la imagen antigua (`valencia-traffic-ingestion:latest`) porque `docker compose build` usaba la caché de capas anteriores, ignorando los cambios en los archivos copiados (`COPY src/ ./src/`).
+- **Solución:** Forzar el rebuild sin caché en el pipeline de despliegue (`deploy.yml`).
+  ```yaml
+  docker compose build --no-cache
+  ```
+
+### 11. Duplicados en API Paginada (Inestabilidad del Orden)
+- **Síntoma:** Se obtenían 400 registros (paginados), pero 22 eran duplicados del primer lote, faltando 22 reales.
+- **Causa:** La API de OpenDataSoft (live) cambia el orden de los registros mientras se pagina, provocando que registros de la página 1 aparezcan de nuevo en la página 2.
+- **Solución:** Implementar lógica de deduplicación en `ingest_traffic.py` usando el identificador único `idtramo` antes de guardar el JSON.
+
+### 10. Jupyter Data Path vs. Airflow Path
+- **Síntoma:** El notebook no encontraba datos en `../data/raw`.
+- **Causa:** Confusión entre la migración de datos manual y la automática. Había una carpeta `/opt/.../data/2025` (antigua) y `/opt/.../data/raw/2025` (nueva).
+- **Solución:** Unificar directorios y asegurar permisos recursivos.
+  ```bash
+  sudo rsync -av data/2025/ data/raw/2025/
+  sudo chown -R 50000:0 data
+  ```
+
 ## 📅 2025-12-19: Migración a /opt y Configuración Dinámica
 
 ### 9. Jupyter "Permission Denied" al guardar notebooks
