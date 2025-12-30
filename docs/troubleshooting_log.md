@@ -130,6 +130,11 @@ Este documento registra los problemas técnicos encontrados durante el desarroll
 - **Causa:** La imagen `python:3.10-slim` (basada en Debian Trixie/Testing) no incluye ni necesita `software-properties-common` para las dependencias básicas de build.
 - **Solución:** Eliminar el paquete de la lista de `apt-get install` en el `Dockerfile.dashboard`.
 
+### 15. FileNotFoundError: 'data/sensors_master.json' in Docker
+- **Síntoma:** El dashboard falla al iniciar en el VPS con un error de archivo no encontrado.
+- **Causa:** La carpeta `data/` está en el `.gitignore` y `.dockerignore`, por lo que el archivo de metadatos de sensores no se sube al VPS ni se incluye en la imagen de Docker.
+- **Solución:** Mover `sensors_master.json` a la carpeta `visualization/` (que sí se incluye en el build) y actualizar la ruta de carga en `app.py`.
+
 ---
 ## 🛡️ Notas de Seguridad
 - **Acceso Web:** Se restringió el puerto 8080 a `127.0.0.1` para obligar el uso de Túnel SSH (`ssh -L 8080:localhost:8080 ...`) y evitar exposición pública insegura.

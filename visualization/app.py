@@ -28,7 +28,7 @@ st.set_page_config(
 @st.cache_resource
 def load_sensors():
     """Load static sensor geometries."""
-    with open("data/sensors_master.json", "r", encoding="utf-8") as f:
+    with open("visualization/sensors_master.json", "r", encoding="utf-8") as f:
         return pd.DataFrame(json.load(f))
 
 @st.cache_data
