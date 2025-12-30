@@ -125,6 +125,11 @@ Este documento registra los problemas técnicos encontrados durante el desarroll
   pip install -r requirements.txt
   ```
 
+### 14. E: Unable to locate package software-properties-common
+- **Síntoma:** Error 100 durante el `docker compose build` del dashboard.
+- **Causa:** La imagen `python:3.10-slim` (basada en Debian Trixie/Testing) no incluye ni necesita `software-properties-common` para las dependencias básicas de build.
+- **Solución:** Eliminar el paquete de la lista de `apt-get install` en el `Dockerfile.dashboard`.
+
 ---
 ## 🛡️ Notas de Seguridad
 - **Acceso Web:** Se restringió el puerto 8080 a `127.0.0.1` para obligar el uso de Túnel SSH (`ssh -L 8080:localhost:8080 ...`) y evitar exposición pública insegura.
