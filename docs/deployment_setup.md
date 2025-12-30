@@ -63,3 +63,23 @@ No expongas el puerto 8080 a internet. Usa un túnel SSH para acceder a Airflow 
 ssh -L 8888:127.0.0.1:8888 usuario@<VPS_IP>
 ```
 Abrir Jupyter: `http://localhost:8888`
+
+## 5. Despliegue del Dashboard (The Spotlight) - ¡Automatizado!
+
+Gracias a la integración en `docker-compose.yml`, el dashboard ahora se gestiona junto con el resto de la plataforma.
+
+### ¿Cómo funciona el despliegue?
+Cada vez que hagas un `git push origin main`:
+1.  **GitHub Actions** copia el código al VPS.
+2.  Ejecuta `docker compose build --no-cache`, lo que reconstruye la imagen del dashboard con tu último modelo y código.
+3.  Ejecuta `docker compose up -d`, lo que reinicia el contenedor `spotlight` si hay cambios.
+
+### Verificación en el VPS
+Para ver el estado del dashboard:
+```bash
+docker compose ps
+```
+Deberías ver el servicio `spotlight` en estado `Up`.
+
+### Acceso
+Por defecto, el dashboard está mapeado a `127.0.0.1:8501`. Úsalo con un túnel SSH o configúralo tras Nginx.

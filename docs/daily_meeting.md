@@ -52,10 +52,13 @@
     - Mapa interactivo con tramos de tráfico codificados por colores (Fluido -> Congestión).
     - Métricas de salud del tráfico integradas.
     - Solucionados problemas de dependencias en entorno `envdata` y bugs de integración (`PolyLine`, `KeyError`).
-- [x] **Integración de "The Oracle" (29/12):**
+- [x] **Integración de "The Oracle" y Despliegue (29/12 - 30/12):**
     - [x] Exportado modelo Champion (XGBoost) mediante `scripts/export_champion.py`.
     - [x] Implementado "Traductor" de inferencia con Codificación Cíclica (Sin/Cos) y Lags.
-    - [x] Activada inferencia en vivo en el dashboard (+10 min vista).
+    - [x] **Dockerización:** Dashboard empaquetado y automatizado en `docker-compose.yml`.
+    - [x] **Fix Inferencia:** Corregido error de paquete `software-properties-common` en la imagen slim.
+    - [x] **Fix Metadata:** Reubicado `sensors_master.json` a `visualization/` para asegurar su disponibilidad en el contenedor.
+    - [x] **Live:** Dashboard operativo en el VPS (+10 min vista).
 
 ## 📋 Próximos Pasos
 1.  **Mantenimiento y DevOps**

@@ -11,9 +11,9 @@ A Data Engineering project to ingest, process, and analyze real-time traffic dat
 5.  **Visualization ("The Spotlight"):** Streamlit dashboard providing real-time maps and system health metrics.
 
 ## 🚀 Project Status
-- **Status:** 🟢 Dashboard Operativo (Local/Dev) | 🟢 Ingestión en Producción (VPS).
-- **Last Update:** 26/12/2025
-- **Current Milestone:** "The Spotlight" (Streamlit Dashboard) lanzado. Modelo "The Oracle" integrado y listo para inferencia.
+- **Status:** 🟢 Dashboard Operativo (VPS) | 🟢 Ingestión en Producción (VPS).
+- **Last Update:** 30/12/2025
+- **Current Milestone:** CI/CD completo. Dashboard "The Spotlight" desplegado en contenedor con inferencia de "The Oracle" en vivo.
 
 ## 🚀 Getting Started
 
