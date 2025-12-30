@@ -1,30 +1,32 @@
-# Git
-.git
-.gitignore
+# Entornos virtuales locales
+.venv/
+env/
+venv/
+envdata/
 
-# Python
-__pycache__
-*.pyc
-*.pyo
-*.pyd
-.Python
-env
-venv
-.venv
-pip-log.txt
-pip-delete-this-directory.txt
+# Caché de Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
 
-# Data
-data/
+# Datos (No incluir en la imagen, usar Volúmenes)
+data/**
+!data/.gitkeep
 
-# Documentation
-docs/
-daily_meeting.md
+# Notebooks (Pesados y no necesarios para producción)
+notebooks/
+
+# IDE y Sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+.git/
+
+# Misceláneo
+Dockerfile*
+docker-compose*
 README.md
-
-# IDE
-.vscode
-.idea
-
-# Environment
-.env
+docs/
+scripts/

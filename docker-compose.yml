@@ -99,5 +99,17 @@ services:
       JUPYTER_ENABLE_LAB: "yes"
     restart: always
 
+  spotlight:
+    build:
+      context: .
+      dockerfile: Dockerfile.dashboard
+    image: valencia-traffic-dashboard:latest
+    container_name: spotlight
+    ports:
+      - "127.0.0.1:8501:8501"
+    volumes:
+      - ${AIRFLOW_PROJ_DIR:-.}/data:/app/data
+    restart: always
+
 volumes:
   postgres-db-volume:

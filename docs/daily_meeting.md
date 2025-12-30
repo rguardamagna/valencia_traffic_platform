@@ -52,12 +52,15 @@
     - Mapa interactivo con tramos de tráfico codificados por colores (Fluido -> Congestión).
     - Métricas de salud del tráfico integradas.
     - Solucionados problemas de dependencias en entorno `envdata` y bugs de integración (`PolyLine`, `KeyError`).
+- [x] **Integración de "The Oracle" (29/12):**
+    - [x] Exportado modelo Champion (XGBoost) mediante `scripts/export_champion.py`.
+    - [x] Implementado "Traductor" de inferencia con Codificación Cíclica (Sin/Cos) y Lags.
+    - [x] Activada inferencia en vivo en el dashboard (+10 min vista).
 
 ## 📋 Próximos Pasos
-1.  **Ruta 1 - ML Ops: Integración de "The Oracle"**
-    - Exportar el modelo Champion (XGBoost) desde el notebook a `/models/champion_xgboost.joblib`.
-    - Implementar pipeline de pre-procesamiento real-time en el dashboard (encoding, lags).
-    - Activar la inferencia en vivo para mostrar predicciones a +15/30 min sobre el mapa.
+1.  **Mantenimiento y DevOps**
+    - [x] Dockerizar el dashboard para garantizar portabilidad en el VPS.
+    - [x] Estandarizar el uso de entornos virtuales locales (`.venv`).
 2.  **Ruta 3 - Cloud: Transición a GCP**
     - Configurar un bucket en **Google Cloud Storage (GCS)** para replicar el Data Lake.
     - Planificar la ingesta de JSONs desde GCS a **BigQuery** para analítica SQL escalable.

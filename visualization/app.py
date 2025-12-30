@@ -13,6 +13,7 @@ import numpy as np
 # Add src to path for data loading utilities
 sys.path.append(os.path.abspath("."))
 from src.refining.data_loader import load_historical_data
+from src.refining.inference_utils import prepare_inference_features
 
 # Page Configuration
 st.set_page_config(
@@ -31,18 +32,22 @@ def load_sensors():
         return pd.DataFrame(json.load(f))
 
 @st.cache_data
-def get_latest_traffic():
-    """Find and load the most recent JSON snapshot."""
+def get_traffic_window(minutes=60):
+    """Load a window of recent JSON snapshots for lag calculation."""
     base_raw = Path("data/raw")
     all_files = sorted(list(base_raw.rglob("*.json")), key=os.path.getmtime, reverse=True)
     if not all_files:
         return pd.DataFrame()
     
-    # Use our existing data_loader but for a single file (or a few recent ones)
+    # We take the parent folder of the latest file and load all files in it (usually partitioned by day)
+    # This ensures we have enough history for the current day.
     df = load_historical_data(str(all_files[0].parent))
-    # Filter for only the latest snapshot in that folder
+    
+    # Calculate cutoff
     latest_ts = df['ingested_at'].max()
-    return df[df['ingested_at'] == latest_ts]
+    cutoff = latest_ts - pd.Timedelta(minutes=minutes)
+    
+    return df[df['ingested_at'] >= cutoff]
 
 @st.cache_resource
 def load_oracle_model():
@@ -99,36 +104,62 @@ st.sidebar.info("""
 
 st.title("Valencia Real-Time Traffic Monitor")
 
+# Main Logic
+
 # Data Loading
 sensors_df = load_sensors()
-traffic_df = get_latest_traffic()
+# Load a window of data (60 min) to have enough points for Lag 1, 2, 3
+traffic_window = get_traffic_window(minutes=60)
 
-if traffic_df.empty:
+if traffic_window.empty:
     st.error("No se ha encontrado información de tráfico reciente.")
 else:
-    # Merge current data with geometries
-    # Good Practice: Select only needed columns to avoid name collisions (e.g., 'denominacion')
-    traffic_subset = traffic_df[['idtramo', 'estado', 'ingested_at']]
+    # Identify the latest snapshot
+    latest_ts = traffic_window['ingested_at'].max()
+    current_traffic = traffic_window[traffic_window['ingested_at'] == latest_ts]
+    
+    # Oracle Mode: Perform Actual Inference
+    oracle_active = (app_mode == "The Oracle (Predicción)")
+    model = load_oracle_model() if oracle_active else None
+    
+    if oracle_active:
+        if model:
+            # Prepare features (The Translator)
+            X_inference, feature_cols = prepare_inference_features(traffic_window)
+            if not X_inference.empty:
+                # Predict
+                preds = model.predict(X_inference[feature_cols])
+                # Add predictions back to the latest snapshot
+                X_inference['predicted_state'] = preds
+                # Merge prediction with current traffic to display on map
+                display_df = pd.merge(current_traffic, X_inference[['idtramo', 'predicted_state']], on='idtramo', how='left')
+                # Overwrite 'estado' with 'predicted_state' for the visualization
+                display_df['estado'] = display_df['predicted_state'].fillna(display_df['estado'])
+            else:
+                st.sidebar.error("Historia insuficiente para calcular lags.")
+                display_df = current_traffic
+        else:
+            st.sidebar.error("Modelo 'Champion' no encontrado en /models")
+            display_df = current_traffic
+    else:
+        display_df = current_traffic
+
+    # Merge current data (or predictions) with geometries
+    traffic_subset = display_df[['idtramo', 'estado', 'ingested_at']]
     merged_df = pd.merge(sensors_df, traffic_subset, on='idtramo', how='inner')
     
     # Date and Time Info
-    last_update = merged_df['ingested_at'].iloc[0]
-    st.caption(f"Última actualización: {last_update.strftime('%Y-%m-%d %H:%M:%S')}")
+    st.caption(f"Última actualización: {latest_ts.strftime('%Y-%m-%d %H:%M:%S')}")
+
+    if oracle_active:
+        st.sidebar.warning("Oracle Mode: Proyección a +10 min basada en XGBoost")
 
     # Map Creation
-    # Center on Valencia City Hall
     m = folium.Map(location=[39.4699, -0.3763], zoom_start=14, tiles="cartodbpositron")
 
     for _, row in merged_df.iterrows():
         status = row['estado']
         color = get_status_color(status)
-        
-        # Oracle Mode: Apply basic prediction logic 
-        # (This is a simplified implementation for the E2E demo)
-        if app_mode == "The Oracle (Predicción)":
-            # In a real scenario, we would run: model.predict(X_current)
-            # Here we just keep current to show the capability
-            st.sidebar.warning("Oracle Mode: Mostrando proyección a +15 min (Simulada)")
         
         folium.PolyLine(
             locations=row['coordinates'],

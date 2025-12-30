@@ -113,6 +113,19 @@ Este documento registra los problemas técnicos encontrados durante el desarroll
   ```
 
 ---
+## 📅 2025-12-29: Integración de Machine Learning ("The Oracle")
+
+### 13. Fatal Error in Launcher (Path Corruption)
+- **Síntoma:** Error `Fatal error in launcher: Unable to create process...` al ejecutar `pip` o `python`.
+- **Causa:** El entorno virtual original (`envdata`) contenía rutas absolutas que se rompieron al mover el proyecto o renombrar carpetas superiores (`/proyects/`). Los ejecutables de Python/Pip en Windows tienen la ruta hardcodeada en el `.exe`.
+- **Solución:** Abandonar el entorno global y crear un entorno virtual local dedicado por proyecto.
+  ```powershell
+  python -m venv .venv
+  .\.venv\Scripts\Activate.ps1
+  pip install -r requirements.txt
+  ```
+
+---
 ## 🛡️ Notas de Seguridad
 - **Acceso Web:** Se restringió el puerto 8080 a `127.0.0.1` para obligar el uso de Túnel SSH (`ssh -L 8080:localhost:8080 ...`) y evitar exposición pública insegura.
 - **Secretos:** El archivo `.env` se excluyó de git y se gestiona manualmente en el servidor.
